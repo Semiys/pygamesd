@@ -22,7 +22,7 @@ class Player(pygame.sprite.Sprite):
         self.jump_speed = -10  # начальная скорость прыжка
         self.gravity = 0.5  # гравитация
         self.velocity_y = 0  # текущая вертикальная скорость
-        self.ground_level = 350  # Уровень "невидимой земли"
+        self.ground_level = 375  # Уровень "невидимой земли"
         self.direction = 1  # 1 - право, -1 - лево
         self.image_flipped = False
         self.velocity = pygame.math.Vector2(0, 0)
