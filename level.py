@@ -86,36 +86,24 @@ class Level:
             for x in range(0, self.screen_width, 64):
                 ground_tile = Tile('background/tiles/Tiles.png', x, y)
                 self.visible_sprites.add(ground_tile)
-    def update(self, keys):
-        # Обновление состояния движения
+    def update(self,keys):
+
+        # Обновление игрока и фона
         self.player.update(keys)
+        self.background.update(self.player.velocity.x)
+
+        # Обработка столкновений
         self.handle_collisions()
-        self.moving_right = keys[pygame.K_RIGHT]
-        self.moving_left = keys[pygame.K_LEFT]
-        # Проверка столкновений
-        if self.moving_right:
-            self.player.rect.x += self.speed
-            for sprite in self.tiles:
-                if sprite.rect.colliderect(self.player.rect):
-                    self.player.rect.right = sprite.rect.left  # Столкновение с правой стороны
-
-        if self.moving_left:
-            self.player.rect.x -= self.speed
-            for sprite in self.tiles:
-                if sprite.rect.colliderect(self.player.rect):
-                    self.player.rect.left = sprite.rect.right  # Столкновение с левой стороны
-
-        # Проверка столкновений по вертикали (если игрок падает или прыгает)
-        self.player.rect.y += self.vertical_velocity
-        for sprite in self.tiles:
-            if sprite.rect.colliderect(self.player.rect):
-                if self.vertical_velocity > 0:
-                    self.player.rect.bottom = sprite.rect.top  # Столкновение снизу
-                    self.vertical_velocity = 0  # Останавливаем падение
-                elif self.vertical_velocity < 0:
-                    self.player.rect.top = sprite.rect.bottom  # Столкновение сверху
-                    self.vertical_velocity = 0  # Останавливаем прыжок
     def handle_collisions(self):
+        # Обработка горизонтальных столкновений
+        for tile in self.tiles:
+            if self.player.rect.colliderect(tile.rect):
+                if self.player.velocity.x > 0:  # Moving right
+                    self.player.rect.right = tile.rect.left
+                elif self.player.velocity.x < 0:  # Moving left
+                    self.player.rect.left = tile.rect.right
+
+        # Обработка вертикальных столкновений
         for tile in self.tiles:
             if self.player.rect.colliderect(tile.rect):
                 if self.player.velocity_y > 0:  # Falling
@@ -126,19 +114,11 @@ class Level:
                 elif self.player.velocity_y < 0:  # Jumping
                     self.player.rect.top = tile.rect.bottom
                     self.player.velocity_y = 0
-                # Handle horizontal collisions
-                if self.player.velocity.x > 0:  # Moving right
-                    self.player.rect.right = tile.rect.left
-                elif self.player.velocity.x < 0:  # Moving left
-                    self.player.rect.left = tile.rect.right
 
 
 
 
-        # Обработка ввода пользователя, если игрок существует
-        if self.player:
-            self.player.update(keys)
-            self.background.update(self.player.velocity.x)
+
 
     def draw(self, surface):
         # Отрисовка фона

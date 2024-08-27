@@ -32,7 +32,7 @@ level_layout = [
         '............XXX.............',
         '...X........XXX.............',
         '..XXX.......................',
-        'P...........................',
+        'PX..........................',
         'XXXXXXXXXXXXXXXXXXXXXXXXXXXX',
         'XXXXXXXXXXXXXXXXXXXXXXXXXXXX',
         'XXXXXXXXXXXXXXXXXXXXXXXXXXXX',
@@ -50,8 +50,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    # Обновление уровня и всех его спрайтов
-    keys = pygame.key.get_pressed()
+
     level.update(keys)  # Это должно включать обновление игрока
 
     # Отрисовка
