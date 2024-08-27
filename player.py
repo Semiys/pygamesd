@@ -12,7 +12,7 @@ class Player(pygame.sprite.Sprite):
         self.current_frame = 0
         self.image = self.idle_frames[self.current_frame]
         self.rect = self.image.get_rect(topleft=(x, y))
-        self.speed = 5
+        self.speed = 4
         self.last_updated_time = pygame.time.get_ticks()
         self.animation_speed = 220  # скорость анимации в миллисекундах
         # Состояния игрока
@@ -25,6 +25,7 @@ class Player(pygame.sprite.Sprite):
         self.ground_level = 350  # Уровень "невидимой земли"
         self.direction = 1  # 1 - право, -1 - лево
         self.image_flipped = False
+        self.velocity = pygame.math.Vector2(0, 0)
 
     def flip_image(self):
         if self.direction == -1 and not self.image_flipped:
@@ -77,17 +78,19 @@ class Player(pygame.sprite.Sprite):
 
 
     def update(self, keys):
+        # Обнуляем горизонтальную скорость
+        self.velocity.x = 0
 
         # Обработка ввода для перемещения игрока
         if keys[pygame.K_LEFT]:
-            self.rect.x -= self.speed
+            self.velocity.x = -self.speed
             self.is_running = True
             if self.direction != -1:  # Обновляем направление только если оно изменилось
                 self.direction = -1
                 self.flip_image()  # Вызов функции отражения изображения
 
         elif keys[pygame.K_RIGHT]:
-            self.rect.x += self.speed
+            self.velocity.x = self.speed
             self.is_running = True
             if self.direction != 1:  # Обновляем направление только если оно изменилось
                 self.direction = 1
@@ -95,7 +98,9 @@ class Player(pygame.sprite.Sprite):
 
         else:
             self.is_running = False  # Сброс состояния бега, если нет движения
+        self.rect.x += self.velocity.x
         # Прыжок
+
         if keys[pygame.K_SPACE] and not self.is_jumping and not self.is_falling:
             self.start_jump()
 
